@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - My Orders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 2rem;
+      background: #131921;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav .logo { font-size: 1.8rem; font-weight: 700; color: #ff9900; }
+    nav ul { display: flex; list-style: none; gap: 1.2rem; margin: 0; padding: 0; }
+    nav ul li a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+    nav ul li a:hover { color: #febd69; }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    h2 {
+      text-align: center;
+      color: #1a1f36;
+      margin-bottom: 2rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background: #1f7aec;
+      color: white;
+    }
+    td ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    td ul li {
+      display: flex;
+      align-items: center;
+      margin: 0.2rem 0;
+    }
+    .product-img {
+      width: 40px;
+      height: 40px;
+      margin-right: 0.5rem;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+    .status-pending {
+      color: orange;
+      font-weight: bold;
+    }
+    .status-paid {
+      color: green;
+      font-weight: bold;
+    }
+    .status-cancelled {
+      color: red;
+      font-weight: bold;
+    }
+    .cancel-btn {
+      padding: 0.4rem 0.8rem;
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .cancel-btn:hover {
+      background: darkred;
+    }
+
+    footer { background: #131921; color: white; padding: 2.5rem 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; border-top: 4px solid #febd69; }
+    footer .footer-section { flex: 1 1 250px; }
+    footer h3 { font-size: 1.2rem; margin-bottom: 1rem; color: #febd69; }
+    footer ul { list-style: none; padding: 0; }
+    footer ul li { margin-bottom: 0.5rem; }
+    footer ul li a { color: white; text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+    footer ul li a:hover { color: #febd69; }
+    footer p { font-size: 0.9rem; line-height: 1.5; }
+    footer .footer-bottom { width: 100%; text-align: center; margin-top: 2rem; font-size: 0.85rem; border-top: 1px solid #444; padding-top: 1rem; color: #aaa; }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">ShopEasy</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="orders.html">My Orders</a></li>
+    </ul>
+  </nav>
+  <div class="container">
+    <h2>My Orders</h2>
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Items</th>
+          <th>Total Price</th>
+          <th>Payment Method</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="ordersBody">
+        <!-- Orders will be populated here -->
+      </tbody>
+    </table>
+  </div>
+   <!-- Footer -->
+  <footer>
+    <div class="footer-section">
+      <h3>About ShopEasy</h3>
+      <p>ShopEasy is your one-stop shop for fashion, electronics, and more.</p>
+    </div>
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h3>Customer Service</h3>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">&copy; 2025 ShopEasy. All rights reserved.</div>
+  </footer>
+
+  <script>
+  const ordersBody = document.getElementById('ordersBody');
+  const token = localStorage.getItem('token');
+
+  // ✅ Update navbar immediately
+  checkAuthNavbar();
+
+  if (!token) {
+    alert('Please login first.');
+    window.location.href = 'login.html';
+  }
+
+  async function fetchOrders() {
+    try {
+      const res = await fetch('http://localhost:5000/api/orders', {
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message || 'Failed to load orders.');
+        if (res.status === 401) {
+          localStorage.removeItem('token');
+          window.location.href = 'login.html';
+        }
+        return;
+      }
+
+      renderOrders(data.orders || []);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to load orders.');
+    }
+  }
+
+  async function cancelOrder(orderId) {
+    if (!confirm('Are you sure you want to cancel this order?')) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/cancel`, {
+        method: 'PUT',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to cancel order');
+
+      alert('Order cancelled successfully.');
+      fetchOrders();
+    } catch (err) {
+      console.error(err);
+      alert('Something went wrong while cancelling order.');
+    }
+  }
+
+  function renderOrders(orders) {
+    ordersBody.innerHTML = '';
+
+    if (orders.length === 0) {
+      ordersBody.innerHTML = '<tr><td colspan="6">You have no orders yet.</td></tr>';
+      return;
+    }
+
+    orders.forEach(order => {
+      const tr = document.createElement('tr');
+
+      const itemsList = order.items.map(item => {
+        const title = item.product?.title || 'No Name';
+        const image = item.product?.images?.[0] || 'https://via.placeholder.com/40';
+        return `<li><img src="${image}" alt="${title}" class="product-img">${title} x ${item.quantity}</li>`;
+      }).join('');
+
+      let statusClass = '';
+      if (order.status === 'Pending') statusClass = 'status-pending';
+      else if (order.status === 'Paid') statusClass = 'status-paid';
+      else if (order.status === 'Cancelled') statusClass = 'status-cancelled';
+
+      tr.innerHTML = `
+        <td>${order._id}</td>
+        <td><ul>${itemsList}</ul></td>
+        <td>$${order.totalPrice.toFixed(2)}</td>
+        <td>${order.paymentMethod}</td>
+        <td class="${statusClass}">${order.status}</td>
+        <td>${order.status === 'Pending' ? `<button class="cancel-btn" onclick="cancelOrder('${order._id}')">Cancel</button>` : '-'}</td>
+      `;
+      ordersBody.appendChild(tr);
+    });
+  }
+
+  // ✅ Function to manage navbar links dynamically
+  function checkAuthNavbar() {
+    const token = localStorage.getItem("token");
+    const nav = document.querySelector("nav ul");
+
+    if (!nav) return; // if no nav, skip
+
+    const loginLink = nav.querySelector('a[href="login.html"]')?.parentElement;
+    const registerLink = nav.querySelector('a[href="register.html"]')?.parentElement;
+    const logoutLink = nav.querySelector('a[href="#logout"]')?.parentElement;
+
+    if (token) {
+      // Hide Login & Register
+      if (loginLink) loginLink.style.display = "none";
+      if (registerLink) registerLink.style.display = "none";
+
+      // Add Logout if not there
+      if (!logoutLink) {
+        const li = document.createElement("li");
+        const logout = document.createElement("a");
+        logout.href = "#logout";
+        logout.innerText = "Logout";
+        logout.addEventListener("click", () => {
+          localStorage.removeItem("token");
+          alert("Logged out successfully!");
+          window.location.reload();
+        });
+        li.appendChild(logout);
+        nav.appendChild(li);
+      }
+    } else {
+      // Show Login & Register again
+      if (loginLink) loginLink.style.display = "block";
+      if (registerLink) registerLink.style.display = "block";
+
+      // Remove Logout if exists
+      if (logoutLink) logoutLink.remove();
+    }
+  }
+
+  fetchOrders();
+</script>
+
+</body>
+</html>

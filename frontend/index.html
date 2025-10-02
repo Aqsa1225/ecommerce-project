@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShopEasy - E-commerce Website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.8rem 2rem;
+      background: #131921;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    nav .logo { font-size: 1.8rem; font-weight: 700; color: #ff9900; }
+    nav ul { display: flex; list-style: none; gap: 1.2rem; margin: 0; padding: 0; }
+    nav ul li a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: color 0.3s; }
+    nav ul li a:hover { color: #febd69; }
+    .search-bar { flex: 1; display: flex; margin: 0 2rem; max-width: 500px; }
+    .search-bar input { width: 100%; padding: 8px; border: none; border-radius: 4px 0 0 4px; font-size: 0.95rem; }
+    .search-bar button { background: #febd69; border: none; padding: 8px 12px; border-radius: 0 4px 4px 0; cursor: pointer; font-size: 1rem; }
+    .search-bar button:hover { background: #f3a847; }
+    .hero { text-align: center; padding: 3rem 1rem; background: linear-gradient(90deg, #232f3e, #131921); color: white; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: #febd69; }
+    .hero p { font-size: 1.2rem; }
+    .products { padding: 2rem; max-width: 1400px; margin: auto; flex: 1; }
+    .products h2 { text-align: center; margin-bottom: 2rem; font-size: 2rem; color: #131921; }
+    .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5rem; }
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
+    .product-card img { width: 100%; height: 160px; object-fit: contain; margin-bottom: 0.5rem; }
+    .product-card h3 { font-size: 1rem; margin: 0.5rem 0; height: 2.2rem; overflow: hidden; }
+    .product-card p.price { font-weight: bold; color: #b12704; margin: 0.5rem 0; font-size: 1rem; }
+    .product-card p.desc { font-size: 0.85rem; color: #555; margin-bottom: 0.5rem; height: 38px; overflow: hidden; }
+    .product-card button { margin: 0.3rem; padding: 0.5rem 1rem; border: none; background: #ff9900; color: white; border-radius: 5px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: background 0.3s; }
+    .product-card button:hover { background: #e68a00; }
+    footer { background: #131921; color: white; padding: 2.5rem 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; border-top: 4px solid #febd69; }
+    footer .footer-section { flex: 1 1 250px; }
+    footer h3 { font-size: 1.2rem; margin-bottom: 1rem; color: #febd69; }
+    footer ul { list-style: none; padding: 0; }
+    footer ul li { margin-bottom: 0.5rem; }
+    footer ul li a { color: white; text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+    footer ul li a:hover { color: #febd69; }
+    footer p { font-size: 0.9rem; line-height: 1.5; }
+    footer .footer-bottom { width: 100%; text-align: center; margin-top: 2rem; font-size: 0.85rem; border-top: 1px solid #444; padding-top: 1rem; color: #aaa; }
+    @media (max-width: 1200px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .product-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="logo">ShopEasy</div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search for products...">
+      <button id="searchBtn">🔍</button>
+    </div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="orders.html">My Orders</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Welcome to ShopEasy!</h1>
+    <p>Discover amazing products at unbeatable prices!</p>
+  </section>
+
+  <!-- Products -->
+  <section class="products">
+    <h2>Our Products</h2>
+    <div class="product-grid" id="productGrid">
+      <p>Loading products...</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-section">
+      <h3>About ShopEasy</h3>
+      <p>ShopEasy is your one-stop shop for fashion, electronics, and more.</p>
+    </div>
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+      </ul>
+    </div>
+    <div class="footer-section">
+      <h3>Customer Service</h3>
+      <ul>
+        <li><a href="#">Help Center</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-bottom">&copy; 2025 ShopEasy. All rights reserved.</div>
+  </footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const productGrid = document.getElementById("productGrid");
+
+  // ✅ Check and update navbar based on login status
+  checkAuthNavbar();
+
+  try {
+    const res = await fetch("http://localhost:5000/api/products");
+    if (!res.ok) throw new Error("Failed to fetch products");
+    const data = await res.json();
+    const products = data.products || data; // depending on API response
+
+    renderProducts(products);
+
+    document.getElementById("searchBtn").addEventListener("click", () => {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = products.filter(p =>
+        (p.title || "").toLowerCase().includes(query) ||
+        (p.description || "").toLowerCase().includes(query)
+      );
+      renderProducts(filtered);
+    });
+
+  } catch (err) {
+    console.error(err);
+    productGrid.innerHTML = "<p>Failed to load products. Please try again later.</p>";
+  }
+});
+
+function renderProducts(products) {
+  const productGrid = document.getElementById("productGrid");
+  productGrid.innerHTML = "";
+
+  if (!products.length) {
+    productGrid.innerHTML = "<p>No products found!</p>";
+    return;
+  }
+
+  products.slice(0, 15).forEach(product => {
+    const id = product._id || product.id;
+    const image = product.images?.[0] || product.image || "placeholder.jpg";
+
+    const card = document.createElement("div");
+    card.classList.add("product-card");
+    card.innerHTML = `
+      <img src="${image}" alt="${product.title || 'Product'}">
+      <h3>${product.title || 'No Title'}</h3>
+      <p class="price">$${product.price?.toFixed(2) || '0.00'}</p>
+      <p class="desc">${product.description || ''}</p>
+      <button onclick="addToCart('${id}')">Add to Cart</button>
+      <button onclick="viewDetails('${id}')">View Details</button>
+    `;
+    productGrid.appendChild(card);
+  });
+}
+
+async function addToCart(productId) {
+  if (!productId) { alert("Invalid product ID!"); return; }
+
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("Please login to add items to cart.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  try {
+    const res = await fetch("http://localhost:5000/api/cart/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({ productId, quantity: 1 })
+    });
+
+    const data = await res.json();
+    if (res.ok) {
+      alert(data.message || "Item added to cart!");
+      console.log("Cart item:", data.item);
+    } else {
+      alert(data.message || "Failed to add item to cart.");
+    }
+
+  } catch (err) {
+    console.error("Error adding to cart:", err);
+    alert("Something went wrong adding item to cart.");
+  }
+}
+
+function viewDetails(productId) {
+  if (!productId) { alert("Invalid product ID!"); return; }
+  window.location.href = `product.html?id=${productId}`;
+}
+
+// ✅ Function to update navbar after login
+function checkAuthNavbar() {
+  const token = localStorage.getItem("token");
+  const nav = document.querySelector("nav ul");
+
+  if (token) {
+    // Hide Login & Register
+    const loginLink = nav.querySelector('a[href="login.html"]')?.parentElement;
+    const registerLink = nav.querySelector('a[href="register.html"]')?.parentElement;
+
+    if (loginLink) loginLink.style.display = "none";
+    if (registerLink) registerLink.style.display = "none";
+
+    // Add Logout if not already there
+    if (!nav.querySelector('a[href="#logout"]')) {
+      const li = document.createElement("li");
+      const logout = document.createElement("a");
+      logout.href = "#logout";
+      logout.innerText = "Logout";
+      logout.addEventListener("click", () => {
+        localStorage.removeItem("token");
+        alert("Logged out successfully!");
+        window.location.reload();
+      });
+      li.appendChild(logout);
+      nav.appendChild(li);
+    }
+  }
+}
+</script>
+
+
+
+</body>
+</html>
